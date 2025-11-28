@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lil J's Castle - VLTRN Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .iframe-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            max-width: 100%;
+            width: 100%;
+            max-width: 1400px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .game-frame {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            position: relative;
+            border: 3px solid #667eea;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        .game-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.2em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .iframe-container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="iframe-container">
+        <div class="header">
+            <h1>🏰 Lil J's Castle</h1>
+            <p>Powered by Castle Game Engine | VLTRN Games</p>
+        </div>
+        
+        <div class="game-frame">
+            <div class="loading" id="loading">Loading game...</div>
+            <iframe 
+                id="game-iframe"
+                src="./game/index.html"
+                allow="fullscreen"
+                allowfullscreen
+                title="Lil J's Castle Game"
+                sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+                onload="document.getElementById('loading').style.display='none';"
+            ></iframe>
+        </div>
+        
+        <div class="footer">
+            <p>
+                <a href="https://vltrngames.com">VLTRN Games</a> | 
+                <a href="https://castle-engine.io">Castle Game Engine</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Handle iframe loading
+        const iframe = document.getElementById('game-iframe');
+        const loading = document.getElementById('loading');
+        
+        iframe.addEventListener('load', function() {
+            loading.style.display = 'none';
+        });
+        
+        iframe.addEventListener('error', function() {
+            loading.textContent = 'Error loading game. Please refresh the page.';
+            loading.style.color = '#ff4444';
+        });
+    </script>
+</body>
+</html>
+

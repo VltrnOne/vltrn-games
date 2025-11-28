@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Castle Engine Manifest for "Lil J's Castle" - VLTRN Games
+This project will be deployed to vltrngames.com in an iframe.
+See https://castle-engine.io/project_manifest for documentation.
+-->
+
+<project name="liljs-castle"
+  standalone_source="liljs_castle_standalone.dpr"
+  game_units="GameInitialize"
+  qualified_name="com.vltrngames.liljscastle"
+  caption="Lil J's Castle"
+>
+  <compiler_options>
+    <search_paths>
+      <path value="code/" />
+    </search_paths>
+  </compiler_options>
+  
+  <web>
+    <canvas_width value="1280" />
+    <canvas_height value="720" />
+  </web>
+</project>
+

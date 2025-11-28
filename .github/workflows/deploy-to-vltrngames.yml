@@ -1,0 +1,145 @@
+name: Deploy to vltrngames.com
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # Allows manual triggering
+
+env:
+  DEPLOY_URL: vltrngames.com
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Build All Games from Repo
+        run: |
+          echo "🏗️  Building VLTRN Games from repository..."
+          echo "   (Same process as other games - builds from repo, deploys automatically)"
+          echo ""
+
+          # Build Lil J's Castle
+          if [ -d "projects/liljs-castle" ]; then
+            echo "Building Lil J's Castle..."
+            cd projects/liljs-castle
+
+            # Try to build if castle-engine is available
+            # If not, we'll use placeholder files that are already in repo
+            if command -v castle-engine &> /dev/null; then
+              castle-engine clean 2>/dev/null || true
+              castle-engine compile --target=web --mode=release && \
+                echo "✅ Lil J's Castle built successfully" || \
+                echo "⚠️  Build failed, using placeholder files"
+            else
+              echo "⚠️  castle-engine not available in CI - using placeholder"
+              echo "   Build locally with: ./build-web.sh"
+            fi
+
+            cd ../..
+
+            # Copy built files to web-deploy (if build succeeded)
+            mkdir -p web-deploy/liljs-castle/game
+            if [ -d "projects/liljs-castle/castle-engine-output/web/dist" ]; then
+              cp -r projects/liljs-castle/castle-engine-output/web/dist/* web-deploy/liljs-castle/game/
+              echo "✅ Copied built files to web-deploy/"
+            else
+              echo "ℹ️  Using placeholder files from repo"
+            fi
+          fi
+
+          echo ""
+          echo "🏰 Building Fibonacci Castle Suite..."
+          echo "φ = 1.618033988749..."
+
+          # Build UniCastle (Game 1)
+          if [ -d "projects/01-unicastle" ]; then
+            echo "Building UniCastle (Fibonacci Game 1)..."
+            cd projects/01-unicastle
+
+            if command -v castle-engine &> /dev/null; then
+              castle-engine clean 2>/dev/null || true
+              castle-engine compile --target=web --mode=release && \
+                echo "✅ UniCastle built successfully" || \
+                echo "⚠️  Build failed, using placeholder files"
+
+              cd ../..
+
+              # Copy built files to web-deploy
+              mkdir -p web-deploy/fibonacci-suite/01-unicastle/game
+              if [ -d "projects/01-unicastle/castle-engine-output/web/dist" ]; then
+                cp -r projects/01-unicastle/castle-engine-output/web/dist/* web-deploy/fibonacci-suite/01-unicastle/game/
+                echo "✅ UniCastle copied to web-deploy/"
+              fi
+            else
+              echo "⚠️  castle-engine not available in CI"
+              echo "   Build locally with: ./build-fibonacci-suite.sh"
+              cd ../..
+            fi
+          fi
+
+          # Ensure suite hub page exists
+          if [ ! -f "web-deploy/fibonacci-suite/index.html" ]; then
+            echo "⚠️  Suite hub page missing - will be created from repo"
+          fi
+
+          echo ""
+          echo "📦 Games ready for deployment from repository"
+
+      - name: Deploy to server
+        run: |
+          echo "Deploying to ${{ secrets.DEPLOY_HOST }}..."
+          
+          # Deploy all games from web-deploy directory (same pattern as other games)
+          rsync -avz --delete \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude '.github' \
+            web-deploy/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/web-deploy/
+          
+          # Create symlinks or copy to main site directories (matching other games pattern)
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+            echo "Setting up game directories..."
+
+            # Lil J's Castle
+            mkdir -p ${{ secrets.DEPLOY_PATH }}/liljs-castle
+            cp -r ${{ secrets.DEPLOY_PATH }}/web-deploy/liljs-castle/* ${{ secrets.DEPLOY_PATH }}/liljs-castle/ 2>/dev/null || true
+
+            # Fibonacci Castle Suite
+            mkdir -p ${{ secrets.DEPLOY_PATH }}/fibonacci-suite
+            cp -r ${{ secrets.DEPLOY_PATH }}/web-deploy/fibonacci-suite/* ${{ secrets.DEPLOY_PATH }}/fibonacci-suite/ 2>/dev/null || true
+
+            echo ""
+            echo "✅ Deployment completed successfully!"
+            echo "🌐 Games deployed:"
+            echo "   - https://vltrngames.com/liljs-castle/"
+            echo "   - https://vltrngames.com/fibonacci-suite/ (🏰 NEW!)"
+            echo "   - https://vltrngames.com/fibonacci-suite/01-unicastle/"
+            echo ""
+            echo "📁 Files deployed from repository (auto-updates on push)"
+            echo "φ = 1.618033988749... ✨"
+          EOF
+
+      - name: Notify deployment
+        run: |
+          echo "✅ Successfully deployed to vltrngames.com"
+          echo "Deployment time: $(date)"
+

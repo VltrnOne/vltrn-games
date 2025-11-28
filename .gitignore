@@ -32,6 +32,13 @@ __recovery
 *~
 backup
 
+# VLTRN Games - Deployment files
+deploy/
+*.deploy.log
+.env.local
+.env.production
+deploy-*.tar.gz
+
 # Other unwanted
 *.apk
 *.aab

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lil J's Castle - Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            max-width: 800px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .castle-icon {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .build-instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .build-instructions code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="castle-icon">🏰</div>
+        <h1>Lil J's Castle</h1>
+        <p>Welcome to Lil J's Castle!</p>
+        <p>The game is being prepared<span class="loading-dots"></span></p>
+        
+        <div class="status">
+            <p><strong>Status:</strong> Game files need to be built</p>
+            <p>This is a placeholder page. Once you build the game, this will be replaced with the actual Castle Engine game.</p>
+        </div>
+        
+        <div class="build-instructions">
+            <p><strong>To build the game:</strong></p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li style="margin: 8px 0;">Run: <code>./build-web.sh</code></li>
+                <li style="margin: 8px 0;">Or manually: <code>cd projects/liljs-castle && castle-engine compile --target=web --mode=release</code></li>
+                <li style="margin: 8px 0;">Copy files: <code>cp -r projects/liljs-castle/castle-engine-output/web/dist/* web-deploy/liljs-castle/game/</code></li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
+

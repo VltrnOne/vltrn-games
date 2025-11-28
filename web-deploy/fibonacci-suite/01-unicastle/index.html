@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniCastle - Fibonacci Castle Suite</title>
+    <meta name="description" content="One Tower Rises - Learn Fibonacci through elegant jumping mechanics">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1510 0%, #2d1f15 100%);
+            color: #ffd700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #c9a959;
+            font-size: 1.2em;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #ffd700;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid #ffd700;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .game-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            max-width: 1340px;
+            width: 100%;
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 760px;
+            border: none;
+            border-radius: 8px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading {
+            color: #ffd700;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .fibonacci-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .fibonacci-info h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .fibonacci-info p {
+            color: #c9a959;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .fib-sequence {
+            color: #ffd700;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 8px;
+        }
+
+        .controls h4 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .controls ul {
+            color: #c9a959;
+            list-style-position: inside;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            .game-frame {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-link">← Back to Suite</a>
+
+    <div class="header">
+        <h1>🏰 UniCastle</h1>
+        <p>One Tower Rises</p>
+    </div>
+
+    <div class="game-container">
+        <iframe
+            class="game-frame"
+            src="game/index.html"
+            allowfullscreen
+            title="UniCastle Game">
+        </iframe>
+
+        <div class="fibonacci-info">
+            <h3>🎮 How to Play</h3>
+            <p>Press <strong>SPACE</strong> to jump! Each jump's power follows the Fibonacci sequence.</p>
+            <p>Collect golden spirals to score points based on their Fibonacci values.</p>
+
+            <div class="controls">
+                <h4>Controls</h4>
+                <ul>
+                    <li><strong>SPACE</strong> - Jump (power increases: 1, 1, 2, 3, 5, 8, 13, 21...)</li>
+                    <li><strong>ESC</strong> - Return to menu</li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px;">
+                <h4 style="color: #ffd700; margin-bottom: 10px;">💡 Learn</h4>
+                <p>The Fibonacci sequence appears everywhere in nature - in flower petals, seashells, galaxies, and even DNA!</p>
+                <p>In this game, your jump heights grow just like rabbit populations in Fibonacci's original problem from 1202.</p>
+            </div>
+
+            <div class="fib-sequence">
+                Jump Sequence: 1 • 1 • 2 • 3 • 5 • 8 • 13 • 21 • φ=1.618...
+            </div>
+
+            <p style="margin-top: 20px; font-size: 0.9em; color: #c9a959;">
+                <strong>Perfect Score:</strong> 55 points (which is Fib(10)!)
+            </p>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; color: #c9a959;">
+        <p>Part of the <strong style="color: #ffd700;">Fibonacci Castle Suite</strong></p>
+        <p style="font-size: 0.85em; margin-top: 5px;">Where Mathematics Meets Magic ✨</p>
+    </div>
+</body>
+</html>

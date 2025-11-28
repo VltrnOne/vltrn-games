@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<castle_settings>
+  <!-- UI scaling settings for Lil J's Castle -->
+  <ui_scaling>
+    <scale_physical_size value="true" />
+    <scale_dpi value="true" />
+  </ui_scaling>
+  
+  <!-- Window settings -->
+  <window>
+    <default_width value="1280" />
+    <default_height value="720" />
+    <resizable value="true" />
+    <min_width value="640" />
+    <min_height value="360" />
+  </window>
+</castle_settings>
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+# Auto-push hook - pushes to GitHub after commit
+# Install with: git config core.hooksPath .githooks
+
+# Get current branch
+BRANCH=$(git symbolic-ref --short HEAD)
+
+# Push to origin
+echo "Auto-pushing to origin/$BRANCH..."
+git push origin "$BRANCH"
+
+if [ $? -eq 0 ]; then
+    echo "✅ Successfully pushed to GitHub"
+else
+    echo "⚠️  Push failed. You may need to push manually."
+fi
+

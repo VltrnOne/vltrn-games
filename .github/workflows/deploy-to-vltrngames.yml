@@ -21,33 +21,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
-
-      - name: Add server to known hosts
+      - name: Verify deployment secrets
         run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          if [ -z "${{ secrets.DEPLOY_HOST }}" ]; then
-            echo "❌ ERROR: DEPLOY_HOST secret is not set!"
-            echo "Please set DEPLOY_HOST in GitHub Secrets"
+          echo "Verifying deployment configuration..."
+          if [ -z "${{ secrets.FTP_SERVER }}" ] || [ -z "${{ secrets.FTP_USERNAME }}" ] || [ -z "${{ secrets.FTP_PASSWORD }}" ]; then
+            echo "❌ ERROR: Missing FTP credentials!"
+            echo "Required secrets:"
+            echo "  - FTP_SERVER (your FTP hostname)"
+            echo "  - FTP_USERNAME (your FTP username)"
+            echo "  - FTP_PASSWORD (your FTP password)"
+            echo ""
+            echo "Add these at: https://github.com/VltrnOne/vltrn-games/settings/secrets/actions"
             exit 1
           fi
-          echo "Adding ${{ secrets.DEPLOY_HOST }} to known_hosts..."
-
-          # Try standard port 22 first
-          if ssh-keyscan -H -T 10 ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts 2>/dev/null; then
-            echo "✅ Host added successfully on port 22"
-          # Try common SiteGround SSH port 18765
-          elif ssh-keyscan -p 18765 -H -T 10 ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts 2>/dev/null; then
-            echo "✅ Host added successfully on port 18765"
-          else
-            echo "⚠️ Warning: Could not scan host, will use StrictHostKeyChecking=accept-new"
-            echo "This is normal for some hosting providers"
-          fi
-          chmod 644 ~/.ssh/known_hosts 2>/dev/null || true
+          echo "✅ FTP credentials configured"
+          echo "Server: ${{ secrets.FTP_SERVER }}"
+          echo "Username: ${{ secrets.FTP_USERNAME }}"
 
       - name: Build All Games from Repo
         run: |
@@ -122,48 +111,32 @@ jobs:
           echo ""
           echo "📦 Games ready for deployment from repository"
 
-      - name: Deploy to server
-        run: |
-          echo "Deploying to ${{ secrets.DEPLOY_HOST }}..."
-
-          # Determine SSH port (default 22, or use DEPLOY_PORT secret if set)
-          SSH_PORT="${{ secrets.DEPLOY_PORT }}"
-          SSH_PORT="${SSH_PORT:-22}"
-          echo "Using SSH port: $SSH_PORT"
-
-          # Deploy all games from web-deploy directory (same pattern as other games)
-          rsync -avz --delete \
-            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=accept-new" \
-            --exclude '.git' \
-            --exclude 'node_modules' \
-            --exclude '.github' \
-            web-deploy/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/web-deploy/
-          
-          # Create symlinks or copy to main site directories (matching other games pattern)
-          ssh -p $SSH_PORT -o StrictHostKeyChecking=accept-new ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-            echo "Setting up game directories..."
-
-            # Lil J's Castle
-            mkdir -p ${{ secrets.DEPLOY_PATH }}/liljs-castle
-            cp -r ${{ secrets.DEPLOY_PATH }}/web-deploy/liljs-castle/* ${{ secrets.DEPLOY_PATH }}/liljs-castle/ 2>/dev/null || true
-
-            # Fibonacci Castle Suite
-            mkdir -p ${{ secrets.DEPLOY_PATH }}/fibonacci-suite
-            cp -r ${{ secrets.DEPLOY_PATH }}/web-deploy/fibonacci-suite/* ${{ secrets.DEPLOY_PATH }}/fibonacci-suite/ 2>/dev/null || true
-
-            echo ""
-            echo "✅ Deployment completed successfully!"
-            echo "🌐 Games deployed:"
-            echo "   - https://vltrngames.com/liljs-castle/"
-            echo "   - https://vltrngames.com/fibonacci-suite/ (🏰 NEW!)"
-            echo "   - https://vltrngames.com/fibonacci-suite/01-unicastle/"
-            echo ""
-            echo "📁 Files deployed from repository (auto-updates on push)"
-            echo "φ = 1.618033988749... ✨"
-          EOF
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./web-deploy/
+          server-dir: ./public_html/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.github/**
+          dangerous-clean-slate: false
+          log-level: verbose
 
       - name: Notify deployment
         run: |
-          echo "✅ Successfully deployed to vltrngames.com"
-          echo "Deployment time: $(date)"
+          echo ""
+          echo "✅ Deployment completed successfully!"
+          echo "🌐 Games deployed to vltrngames.com:"
+          echo "   - https://vltrngames.com/liljs-castle/"
+          echo "   - https://vltrngames.com/fibonacci-suite/ (🏰 Fibonacci Castle Suite Hub)"
+          echo "   - https://vltrngames.com/fibonacci-suite/01-unicastle/"
+          echo ""
+          echo "📁 Deployed via FTP (bypasses SSH firewall restrictions)"
+          echo "⏰ Deployment time: $(date)"
+          echo "φ = 1.618033988749... ✨"
 

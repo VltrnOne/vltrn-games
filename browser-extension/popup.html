@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLTRN Code Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 350px;
+            min-height: 400px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status {
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+
+        .status.active {
+            background: #c6f6d5;
+            color: #2f855a;
+            font-weight: 500;
+        }
+
+        .status.inactive {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .instructions {
+            margin: 20px 0;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8em;
+            color: #718096;
+        }
+
+        .engine-info {
+            background: #edf2f7;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .engine-info strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 VLTRN Code Assistant</h1>
+
+        <div class="status" id="status">
+            <div id="statusText">Checking status...</div>
+        </div>
+
+        <div class="engine-info" id="engineInfo" style="display: none;">
+            <strong>Active Engine:</strong> <span id="engineName"></span>
+        </div>
+
+        <div class="instructions">
+            <h3>✨ How it works:</h3>
+            <ol>
+                <li>Open <strong>vltrngames.com</strong></li>
+                <li>Navigate to <strong>microStudio</strong>, <strong>Game Builder</strong>, or <strong>Castle</strong></li>
+                <li>Click <strong>🤖 AI Assistant</strong> button</li>
+                <li>Request code like: <em>"make me a snake game"</em></li>
+                <li>Code auto-injects and runs! 🚀</li>
+            </ol>
+        </div>
+
+        <button class="button" id="openVltrn">🎮 Open VLTRN Games</button>
+
+        <div class="footer">
+            φ = 1.618... | VLTRN Games
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

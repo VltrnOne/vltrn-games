@@ -1,0 +1,191 @@
+name: Deploy to vltrngames.com
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  deploy:
+    name: Deploy Games to vltrngames.com
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Castle Engine
+        run: |
+          echo "📦 Setting up Castle Game Engine..."
+          # Install FPC and pas2js if available
+          sudo apt-get update
+          sudo apt-get install -y fpc pas2js || echo "⚠️  FPC/pas2js not available, will deploy existing builds"
+          
+      - name: Build Lil J's Castle
+        run: |
+          echo "🔨 Building Lil J's Castle..."
+          if [ -d "projects/liljs-castle" ]; then
+            cd projects/liljs-castle
+            if command -v castle-engine &> /dev/null; then
+              castle-engine compile --target=web --mode=release || echo "⚠️  Build failed, will deploy existing files"
+            else
+              echo "⚠️  castle-engine not found, skipping build"
+            fi
+            if [ -d "castle-engine-output/web/dist" ]; then
+              mkdir -p ../../web-deploy/liljs-castle/game
+              cp -r castle-engine-output/web/dist/* ../../web-deploy/liljs-castle/game/
+              echo "✅ Copied Lil J's Castle build files"
+            fi
+            cd ../..
+          else
+            echo "⚠️  projects/liljs-castle not found"
+          fi
+
+      - name: Build UniCastle
+        run: |
+          echo "🔨 Building UniCastle..."
+          if [ -d "projects/01-unicastle" ]; then
+            cd projects/01-unicastle
+            if command -v castle-engine &> /dev/null; then
+              castle-engine compile --target=web --mode=release || echo "⚠️  Build failed, will deploy existing files"
+            else
+              echo "⚠️  castle-engine not found, skipping build"
+            fi
+            if [ -d "castle-engine-output/web/dist" ]; then
+              mkdir -p ../../web-deploy/fibonacci-suite/01-unicastle/game
+              cp -r castle-engine-output/web/dist/* ../../web-deploy/fibonacci-suite/01-unicastle/game/
+              echo "✅ Copied UniCastle build files"
+            fi
+            cd ../..
+          else
+            echo "⚠️  projects/01-unicastle not found"
+          fi
+
+      - name: Setup SSH
+        run: |
+          echo "🔐 Setting up SSH..."
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          
+          # Check if SSH key secret exists
+          if [ -z "${{ secrets.DEPLOY_SSH_KEY }}" ]; then
+            echo "❌ ERROR: DEPLOY_SSH_KEY secret is not set!"
+            echo "Please set DEPLOY_SSH_KEY in GitHub Secrets"
+            exit 1
+          fi
+          
+          # Write SSH key
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          
+          # Configure SSH to use the key
+          cat >> ~/.ssh/config << EOF
+          Host deploy-server
+            HostName ${{ secrets.DEPLOY_HOST }}
+            User ${{ secrets.DEPLOY_USER }}
+            IdentityFile ~/.ssh/deploy_key
+            StrictHostKeyChecking accept-new
+            ConnectTimeout 30
+          EOF
+          chmod 600 ~/.ssh/config
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          if [ -z "${{ secrets.DEPLOY_HOST }}" ]; then
+            echo "❌ ERROR: DEPLOY_HOST secret is not set!"
+            echo "Please set DEPLOY_HOST in GitHub Secrets"
+            exit 1
+          fi
+          echo "Adding ${{ secrets.DEPLOY_HOST }} to known_hosts..."
+
+          # Determine SSH port
+          SSH_PORT="${{ secrets.DEPLOY_PORT }}"
+          SSH_PORT="${SSH_PORT:-22}"
+          echo "Using SSH port: $SSH_PORT"
+
+          # Try standard port 22 first
+          if ssh-keyscan -p $SSH_PORT -H -T 10 ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts 2>/dev/null; then
+            echo "✅ Host added successfully on port $SSH_PORT"
+          else
+            echo "⚠️ Warning: Could not scan host, will use StrictHostKeyChecking=accept-new"
+            echo "This is normal for some hosting providers"
+          fi
+          chmod 644 ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Deploy to server
+        run: |
+          echo "Deploying to ${{ secrets.DEPLOY_HOST }}..."
+
+          # Verify all required secrets are set
+          if [ -z "${{ secrets.DEPLOY_HOST }}" ] || [ -z "${{ secrets.DEPLOY_USER }}" ] || [ -z "${{ secrets.DEPLOY_PATH }}" ]; then
+            echo "❌ ERROR: Missing required secrets!"
+            echo "Required: DEPLOY_HOST, DEPLOY_USER, DEPLOY_PATH"
+            exit 1
+          fi
+          
+          echo "✅ All secrets verified"
+          echo "Host: ${{ secrets.DEPLOY_HOST }}"
+          echo "User: ${{ secrets.DEPLOY_USER }}"
+          echo "Path: ${{ secrets.DEPLOY_PATH }}"
+          
+          # Determine SSH port (default 22, or use DEPLOY_PORT secret if set)
+          SSH_PORT="${{ secrets.DEPLOY_PORT }}"
+          SSH_PORT="${SSH_PORT:-22}"
+          echo "Using SSH port: $SSH_PORT"
+
+          # Test SSH connection first
+          echo "Testing SSH connection..."
+          if ssh -p $SSH_PORT -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "echo 'SSH connection successful'" 2>&1; then
+            echo "✅ SSH connection test passed"
+          else
+            echo "❌ SSH connection test failed"
+            echo "This might be due to:"
+            echo "  1. Firewall blocking GitHub Actions IPs"
+            echo "  2. Wrong port number (check DEPLOY_PORT secret)"
+            echo "  3. Wrong hostname (check DEPLOY_HOST secret)"
+            echo "  4. SSH key not authorized on server"
+            exit 1
+          fi
+
+          # Deploy all games from web-deploy directory
+          echo "Starting rsync deployment..."
+          rsync -avz --delete \
+            -e "ssh -p $SSH_PORT -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new -i ~/.ssh/deploy_key" \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude '.github' \
+            web-deploy/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/web-deploy/
+
+          # Create symlinks or copy to main site directories
+          echo "Setting up game directories on server..."
+          ssh -p $SSH_PORT -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << EOF
+            echo "Setting up game directories..."
+
+            # Lil J's Castle
+            mkdir -p ${{ secrets.DEPLOY_PATH }}/liljs-castle
+            cp -r ${{ secrets.DEPLOY_PATH }}/web-deploy/liljs-castle/* ${{ secrets.DEPLOY_PATH }}/liljs-castle/ 2>/dev/null || true
+
+            # Fibonacci Castle Suite
+            mkdir -p ${{ secrets.DEPLOY_PATH }}/fibonacci-suite
+            cp -r ${{ secrets.DEPLOY_PATH }}/web-deploy/fibonacci-suite/* ${{ secrets.DEPLOY_PATH }}/fibonacci-suite/ 2>/dev/null || true
+
+            echo ""
+            echo "✅ Deployment completed successfully!"
+            echo "🌐 Games deployed:"
+            echo "   - https://vltrngames.com/liljs-castle/"
+            echo "   - https://vltrngames.com/fibonacci-suite/ (🏰 NEW!)"
+            echo "   - https://vltrngames.com/fibonacci-suite/01-unicastle/"
+            echo ""
+            echo "📁 Files deployed from repository (auto-updates on push)"
+            echo "φ = 1.618033988749... ✨"
+          EOF
+
+      - name: Notify deployment
+        run: |
+          echo "✅ Successfully deployed to vltrngames.com"
+          echo "Deployment time: $(date)"
+

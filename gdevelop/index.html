@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDevelop Examples - VLTRN Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .filters {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+
+        .example-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        .example-preview {
+            width: 100%;
+            height: 180px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: #ccc;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .example-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .example-info {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .example-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .example-description {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            flex: 1;
+        }
+
+        .example-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .example-tag {
+            background: #e7f3ff;
+            color: #667eea;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .example-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .example-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .example-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .example-btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .example-btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .stats {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+            text-align: center;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .examples-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link">← Back to Games</a>
+
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span>🎮</span>
+                <span>GDevelop Examples</span>
+            </h1>
+            <p>Browse and play hundreds of no-code game examples</p>
+            <p style="font-size: 0.9em; margin-top: 15px; opacity: 0.8;">
+                GDevelop is a full-featured, no-code game engine. Create 2D, 3D, and multiplayer games!
+            </p>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>Category:</label>
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="platformer">Platformer</option>
+                    <option value="3d">3D Games</option>
+                    <option value="shooter">Shooter</option>
+                    <option value="puzzle">Puzzle</option>
+                    <option value="rpg">RPG</option>
+                    <option value="racing">Racing</option>
+                    <option value="multiplayer">Multiplayer</option>
+                    <option value="starting">Starting Templates</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Sort:</label>
+                <select id="sortFilter">
+                    <option value="name">Name</option>
+                    <option value="popular">Popular</option>
+                    <option value="newest">Newest</option>
+                </select>
+            </div>
+
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search examples..."
+                    onkeyup="filterExamples()"
+                >
+            </div>
+        </div>
+
+        <div class="loading" id="loading">Loading examples...</div>
+
+        <div class="examples-grid" id="examplesGrid" style="display: none;">
+            <!-- Examples will be loaded here -->
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            Showing <span id="exampleCount">0</span> examples
+        </div>
+    </div>
+
+    <script>
+        let allExamples = [];
+        let filteredExamples = [];
+
+        // Load examples from GDevelop examples repository
+        async function loadExamples() {
+            try {
+                // In a real implementation, this would fetch from your server
+                // For now, we'll use a curated list of popular examples
+                allExamples = [
+                    {
+                        name: "Platformer",
+                        description: "Classic side-scrolling platformer with jumping and enemies",
+                        category: "platformer",
+                        tags: ["platformer", "2d", "jumping"],
+                        preview: "🏃",
+                        url: "https://gdevelop.io/play/example/platformer",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/platformer"
+                    },
+                    {
+                        name: "3D Platformer",
+                        description: "3D platformer with camera controls and 3D physics",
+                        category: "3d",
+                        tags: ["3d", "platformer", "physics"],
+                        preview: "🎮",
+                        url: "https://gdevelop.io/play/example/3d-platformer",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/3d-platformer"
+                    },
+                    {
+                        name: "Space Shooter",
+                        description: "Top-down space shooter with enemies and power-ups",
+                        category: "shooter",
+                        tags: ["shooter", "space", "2d"],
+                        preview: "🚀",
+                        url: "https://gdevelop.io/play/example/space-shooter",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/space-shooter"
+                    },
+                    {
+                        name: "Flappy Bird",
+                        description: "Classic Flappy Bird clone with obstacles",
+                        category: "puzzle",
+                        tags: ["puzzle", "endless", "mobile"],
+                        preview: "🐦",
+                        url: "https://gdevelop.io/play/example/flappy-bird",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/flappy-bird"
+                    },
+                    {
+                        name: "Top Down RPG",
+                        description: "RPG with inventory, quests, and character progression",
+                        category: "rpg",
+                        tags: ["rpg", "top-down", "inventory"],
+                        preview: "⚔️",
+                        url: "https://gdevelop.io/play/example/top-down-rpg",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/top-down-rpg"
+                    },
+                    {
+                        name: "3D Racing Game",
+                        description: "3D car racing with physics and multiple tracks",
+                        category: "racing",
+                        tags: ["racing", "3d", "physics"],
+                        preview: "🏎️",
+                        url: "https://gdevelop.io/play/example/3d-racing-game",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/3d-racing-game"
+                    },
+                    {
+                        name: "Multiplayer Platformer",
+                        description: "Real-time multiplayer platformer with arrow fight",
+                        category: "multiplayer",
+                        tags: ["multiplayer", "platformer", "online"],
+                        preview: "👥",
+                        url: "https://gdevelop.io/play/example/multiplayer-platformer-arrow-fight",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/multiplayer-platformer-arrow-fight"
+                    },
+                    {
+                        name: "Breakout",
+                        description: "Classic Breakout/Arkanoid game with bricks and paddle",
+                        category: "puzzle",
+                        tags: ["puzzle", "classic", "2d"],
+                        preview: "🎯",
+                        url: "https://gdevelop.io/play/example/breakout",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/breakout"
+                    },
+                    {
+                        name: "Starting Platformer",
+                        description: "Template for creating your own platformer game",
+                        category: "starting",
+                        tags: ["template", "platformer", "starting"],
+                        preview: "📝",
+                        url: "https://gdevelop.io/play/example/starting-platformer",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/starting-platformer"
+                    },
+                    {
+                        name: "Tower Defense",
+                        description: "Tower defense game with waves of enemies",
+                        category: "puzzle",
+                        tags: ["tower-defense", "strategy", "2d"],
+                        preview: "🏰",
+                        url: "https://gdevelop.io/play/example/tower-defense-war",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/tower-defense-war"
+                    },
+                    {
+                        name: "3D First Person",
+                        description: "First-person 3D game with movement and interaction",
+                        category: "3d",
+                        tags: ["3d", "first-person", "fps"],
+                        preview: "🎯",
+                        url: "https://gdevelop.io/play/example/3d-first-person",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/3d-first-person"
+                    },
+                    {
+                        name: "Physics Demo",
+                        description: "Physics simulation with various objects and joints",
+                        category: "puzzle",
+                        tags: ["physics", "simulation", "2d"],
+                        preview: "⚙️",
+                        url: "https://gdevelop.io/play/example/physics",
+                        projectUrl: "https://github.com/GDevelopApp/GDevelop-examples/tree/main/examples/physics"
+                    }
+                ];
+
+                filteredExamples = [...allExamples];
+                displayExamples();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('examplesGrid').style.display = 'grid';
+                document.getElementById('stats').style.display = 'block';
+                updateStats();
+            } catch (error) {
+                console.error('Error loading examples:', error);
+                document.getElementById('loading').innerHTML = 'Error loading examples. Please try again later.';
+            }
+        }
+
+        function displayExamples() {
+            const grid = document.getElementById('examplesGrid');
+            grid.innerHTML = '';
+
+            if (filteredExamples.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>No examples found</h3>
+                        <p>Try adjusting your filters or search terms</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredExamples.forEach(example => {
+                const card = document.createElement('div');
+                card.className = 'example-card';
+                card.innerHTML = `
+                    <div class="example-preview">
+                        ${example.preview}
+                    </div>
+                    <div class="example-info">
+                        <div class="example-title">${example.name}</div>
+                        <div class="example-description">${example.description}</div>
+                        <div class="example-tags">
+                            ${example.tags.map(tag => `<span class="example-tag">${tag}</span>`).join('')}
+                        </div>
+                        <div class="example-actions">
+                            <button class="example-btn example-btn-primary" onclick="playExample('${example.url}')">
+                                ▶ Play
+                            </button>
+                            <button class="example-btn example-btn-secondary" onclick="openProject('${example.projectUrl}')">
+                                📂 Open
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterExamples() {
+            const category = document.getElementById('categoryFilter').value.toLowerCase();
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredExamples = allExamples.filter(example => {
+                const matchesCategory = !category || 
+                    example.category === category ||
+                    example.tags.some(tag => tag.toLowerCase() === category);
+                
+                const matchesSearch = !search ||
+                    example.name.toLowerCase().includes(search) ||
+                    example.description.toLowerCase().includes(search) ||
+                    example.tags.some(tag => tag.toLowerCase().includes(search));
+
+                return matchesCategory && matchesSearch;
+            });
+
+            displayExamples();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('exampleCount').textContent = filteredExamples.length;
+        }
+
+        function playExample(url) {
+            window.open(url, '_blank');
+        }
+
+        function openProject(projectUrl) {
+            window.open(projectUrl, '_blank');
+        }
+
+        // Event listeners
+        document.getElementById('categoryFilter').addEventListener('change', filterExamples);
+        document.getElementById('sortFilter').addEventListener('change', function() {
+            const sortBy = this.value;
+            if (sortBy === 'name') {
+                filteredExamples.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortBy === 'popular') {
+                // In real implementation, sort by popularity
+                filteredExamples.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            displayExamples();
+        });
+
+        // Load examples on page load
+        document.addEventListener('DOMContentLoaded', loadExamples);
+    </script>
+</body>
+</html>
+

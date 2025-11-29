@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Custom Game - VLTRN Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+        }
+
+        .header .back-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .header .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 */
+            position: relative;
+            background: #000;
+        }
+
+        .game-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .info-panel {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .info-panel h3 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .info-panel p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Playing Custom Game</h1>
+            <a href="/game-builder/" class="back-link">← Back to Builder</a>
+        </div>
+
+        <div class="game-frame">
+            <div class="loading" id="loading">Loading your custom game...</div>
+            <iframe id="gameFrame" src="" style="display: none;"></iframe>
+        </div>
+
+        <div class="info-panel">
+            <h3>Custom Configuration Active</h3>
+            <p>Your game is running with custom settings. Share this page with others to let them play your custom version!</p>
+        </div>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameName = window.location.pathname.split('/')[2]; // /play/game-name
+        const configParam = urlParams.get('config');
+
+        // Game URLs
+        const gameUrls = {
+            'liljs-castle': '/liljs-castle/',
+            'unicastle': '/fibonacci-suite/01-unicastle/',
+            'robot-lyric': '/robot-lyric/'
+        };
+
+        if (gameName && gameUrls[gameName]) {
+            let gameUrl = gameUrls[gameName];
+            
+            if (configParam) {
+                // Pass config to game via URL parameter
+                gameUrl += `?config=${configParam}`;
+            }
+
+            const iframe = document.getElementById('gameFrame');
+            iframe.src = gameUrl;
+            iframe.onload = function() {
+                document.getElementById('loading').style.display = 'none';
+                iframe.style.display = 'block';
+            };
+        } else {
+            document.getElementById('loading').textContent = 'Error: Game not found';
+        }
+    </script>
+</body>
+</html>
+

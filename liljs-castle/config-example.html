@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lil J's Castle - Customizable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .iframe-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .game-frame {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            position: relative;
+            border: 3px solid #667eea;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        .game-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+    <!-- Include config loader -->
+    <script src="/game-builder/config-loader.js"></script>
+</head>
+<body>
+    <div class="iframe-container">
+        <div class="header">
+            <h1 id="title">🏰 Lil J's Castle</h1>
+            <p>Powered by Castle Game Engine | VLTRN Games</p>
+        </div>
+        
+        <div class="game-frame">
+            <iframe 
+                id="game-iframe"
+                src="./game/index.html"
+                allow="fullscreen"
+                allowfullscreen
+                title="Lil J's Castle Game"
+                sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+            ></iframe>
+        </div>
+    </div>
+    
+    <script>
+        // Load configuration
+        const config = new GameConfigLoader();
+        
+        // Apply customizations to wrapper
+        const bgColor = config.get('bgColor', '#332618');
+        const titleColor = config.get('titleColor', '#FFCC66');
+        
+        // Apply to page
+        document.body.style.background = bgColor;
+        const title = document.getElementById('title');
+        if (title) {
+            title.style.color = titleColor;
+        }
+        
+        // Pass config to game via URL if config exists
+        const iframe = document.getElementById('game-iframe');
+        const configData = config.getAll();
+        
+        if (Object.keys(configData).length > 0) {
+            const configString = btoa(JSON.stringify(configData));
+            iframe.src = `./game/index.html?config=${configString}`;
+        }
+        
+        // Handle iframe loading
+        iframe.addEventListener('load', function() {
+            console.log('Game loaded with config:', configData);
+        });
+    </script>
+</body>
+</html>
+

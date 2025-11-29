@@ -169,6 +169,59 @@
             font-family: 'Monaco', 'Courier New', monospace;
         }
 
+        .code-block-wrapper {
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .copy-code-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .copy-code-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .copy-code-btn.copied {
+            background: #48bb78;
+        }
+
+        .insertion-guide {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .insertion-guide strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .insertion-guide ol {
+            margin: 5px 0 0 20px;
+            padding: 0;
+        }
+
+        .insertion-guide li {
+            margin: 3px 0;
+        }
+
         .ai-input-container {
             padding: 15px;
             background: #2a2a2a;
@@ -343,10 +396,10 @@
 
             <div class="ai-input-container">
                 <div class="quick-prompts">
+                    <div class="quick-prompt" onclick="sendQuickPrompt('Make me a snake game')">🐍 Snake Game</div>
                     <div class="quick-prompt" onclick="sendQuickPrompt('Create a simple platformer')">🎮 Platformer</div>
                     <div class="quick-prompt" onclick="sendQuickPrompt('Add player movement')">🏃 Movement</div>
                     <div class="quick-prompt" onclick="sendQuickPrompt('Create enemy AI')">👾 Enemy AI</div>
-                    <div class="quick-prompt" onclick="sendQuickPrompt('Add scoring system')">🎯 Scoring</div>
                 </div>
                 <div class="ai-input-wrapper">
                     <textarea
@@ -458,14 +511,45 @@
         }
 
         function formatMessage(text) {
-            // Format code blocks
-            return text.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+            // Replace code blocks with wrapper that includes copy button
+            let codeBlockId = 0;
+            text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, lang, code) {
+                const id = `code-${Date.now()}-${codeBlockId++}`;
+                return `<div class="code-block-wrapper">
+                    <button class="copy-code-btn" onclick="copyCode('${id}')">📋 Copy</button>
+                    <pre id="${id}"><code>${code}</code></pre>
+                </div>`;
+            });
+
+            // Format insertion guides
+            text = text.replace(/\[GUIDE\]([\s\S]*?)\[\/GUIDE\]/g, '<div class="insertion-guide">$1</div>');
+
+            return text;
+        }
+
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const code = codeElement.textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = codeElement.previousElementSibling;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.classList.add('copied');
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
         }
 
         function generateCodeResponse(prompt) {
             const lowerPrompt = prompt.toLowerCase();
 
-            if (lowerPrompt.includes('platformer')) {
+            if (lowerPrompt.includes('snake')) {
+                return `🐍 Perfect! Here's a complete Snake game for microStudio:\n\n\`\`\`javascript\n// Snake Game - microStudio\ninit = function()\n  // Snake body as array of positions\n  snake = [{x:0, y:0}]\n  direction = {x:1, y:0}\n  next_direction = {x:1, y:0}\n  food = {x:5, y:5}\n  grid_size = 20\n  move_timer = 0\n  move_speed = 10 // moves per second\n  game_over = false\n  score = 0\nend\n\nupdate = function()\n  if game_over then\n    if keyboard.press.SPACE then\n      init() // Restart game\n    end\n    return\n  end\n  \n  // Handle input\n  if keyboard.press.UP and direction.y == 0 then\n    next_direction = {x:0, y:1}\n  elsif keyboard.press.DOWN and direction.y == 0 then\n    next_direction = {x:0, y:-1}\n  elsif keyboard.press.LEFT and direction.x == 0 then\n    next_direction = {x:-1, y:0}\n  elsif keyboard.press.RIGHT and direction.x == 0 then\n    next_direction = {x:1, y:0}\n  end\n  \n  // Move snake at fixed speed\n  move_timer += 1\n  if move_timer >= 60/move_speed then\n    move_timer = 0\n    direction = next_direction\n    \n    // Calculate new head position\n    head = snake[0]\n    new_head = {\n      x: head.x + direction.x,\n      y: head.y + direction.y\n    }\n    \n    // Check wall collision\n    if new_head.x < -grid_size/2 or new_head.x >= grid_size/2 or\n       new_head.y < -grid_size/2 or new_head.y >= grid_size/2 then\n      game_over = true\n      return\n    end\n    \n    // Check self collision\n    for i=0 to snake.length-1\n      if snake[i].x == new_head.x and snake[i].y == new_head.y then\n        game_over = true\n        return\n      end\n    end\n    \n    // Add new head\n    snake.insert(0, new_head)\n    \n    // Check food collision\n    if new_head.x == food.x and new_head.y == food.y then\n      score += 10\n      // Spawn new food\n      food.x = floor(random.next()*grid_size) - grid_size/2\n      food.y = floor(random.next()*grid_size) - grid_size/2\n    else\n      // Remove tail if no food eaten\n      snake.removeLast()\n    end\n  end\nend\n\ndraw = function()\n  screen.clear(\"#1a1a1a\")\n  \n  cell_size = screen.height/grid_size\n  \n  // Draw grid\n  screen.setAlpha(0.1)\n  for x=-grid_size/2 to grid_size/2-1\n    for y=-grid_size/2 to grid_size/2-1\n      screen.drawRect(x*cell_size, y*cell_size, cell_size-1, cell_size-1, \"#333\")\n    end\n  end\n  screen.setAlpha(1)\n  \n  // Draw food\n  screen.fillRect(food.x*cell_size, food.y*cell_size, cell_size-2, cell_size-2, \"#ff4444\")\n  \n  // Draw snake\n  for i=0 to snake.length-1\n    segment = snake[i]\n    color = if i == 0 then \"#44ff44\" else \"#88ff88\" end\n    screen.fillRect(segment.x*cell_size, segment.y*cell_size, cell_size-2, cell_size-2, color)\n  end\n  \n  // Draw score\n  screen.drawText("Score: "+score, 0, screen.height/2-20, 15, \"#fff\")\n  \n  if game_over then\n    screen.drawText("GAME OVER", 0, 0, 30, \"#ff4444\")\n    screen.drawText("Press SPACE to restart", 0, -30, 15, \"#fff\")\n  end\nend\n\`\`\`\n\n[GUIDE]<strong>📍 How to insert this code into microStudio:</strong>\n<ol>\n<li>Click the <strong>📋 Copy</strong> button above</li>\n<li>In the microStudio window → Click <strong>"Code"</strong> tab (left sidebar)</li>\n<li>Delete any existing code</li>\n<li>Paste the copied code (Ctrl+V / Cmd+V)</li>\n<li>Click the <strong>▶ Run</strong> button to play!</li>\n</ol>\n<strong>🎮 Controls:</strong> Arrow keys to move • SPACE to restart after game over[/GUIDE]`;
+            } else if (lowerPrompt.includes('platformer')) {
                 return `Great! Let's create a platformer. Here's a starter template:\n\n\`\`\`javascript\nclass Player\n  x = 0\n  y = 0\n  vx = 0\n  vy = 0\n  gravity = -0.5\n  jump_power = 10\n  \n  update = function()\n    // Handle movement\n    if keyboard.LEFT then vx = -3 end\n    if keyboard.RIGHT then vx = 3 end\n    \n    // Apply gravity\n    vy += gravity\n    \n    // Jump\n    if keyboard.SPACE and y <= 0 then\n      vy = jump_power\n    end\n    \n    // Update position\n    x += vx\n    y += vy\n    \n    // Ground collision\n    if y < 0 then\n      y = 0\n      vy = 0\n    end\n    \n    // Friction\n    vx *= 0.8\n  end\nend\n\ninit = function()\n  player = new Player()\nend\n\nupdate = function()\n  player.update()\nend\n\ndraw = function()\n  screen.clear()\n  screen.fillRect(player.x, player.y, 20, 20, "white")\nend\n\`\`\`\n\nCopy this into microStudio's code editor to get started!`;
             } else if (lowerPrompt.includes('movement')) {
                 return `Here's smooth player movement code:\n\n\`\`\`javascript\n// In your update function:\nif keyboard.LEFT then\n  player.vx = -5\nend\n\nif keyboard.RIGHT then\n  player.vx = 5\nend\n\nif keyboard.UP then\n  player.vy = 5\nend\n\nif keyboard.DOWN then\n  player.vy = -5\nend\n\nplayer.x += player.vx\nplayer.y += player.vy\n\n// Add friction\nplayer.vx *= 0.9\nplayer.vy *= 0.9\n\`\`\``;

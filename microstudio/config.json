@@ -1,0 +1,21 @@
+{
+  "realm": "production",
+  "dev_domain": "https://vltrngames.com",
+  "run_domain": "https://vltrngames.com",
+  "default_project_language": "microscript_v2",
+  "custom_branding": {
+    "name": "VLTRN Game Studio",
+    "logo": "/img/vltrn-logo.svg",
+    "favicon": "/img/favicon.ico",
+    "primary_color": "#667eea",
+    "secondary_color": "#764ba2",
+    "theme": "vltrn"
+  },
+  "ai_code_agent": {
+    "enabled": true,
+    "provider": "openai",
+    "model": "gpt-4",
+    "endpoint": "/api/ai/code"
+  }
+}
+

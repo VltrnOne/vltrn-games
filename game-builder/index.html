@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Builder - VLTRN Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .builder-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 25px;
+            border-right: 2px solid #e9ecef;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .preview-area {
+            padding: 25px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-selector {
+            margin-bottom: 25px;
+        }
+
+        .game-selector label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .game-selector select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .customization-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .customization-section:last-child {
+            border-bottom: none;
+        }
+
+        .customization-section h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .control-group input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .control-group input[type="text"],
+        .control-group input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .control-group .value-display {
+            font-size: 0.85em;
+            color: #999;
+            text-align: right;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-header h2 {
+            color: #333;
+        }
+
+        .preview-frame {
+            flex: 1;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+            min-height: 500px;
+            position: relative;
+        }
+
+        .preview-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .preview-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .config-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .share-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .share-section h4 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .share-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .builder-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 2px solid #e9ecef;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Game Builder</h1>
+            <p>Customize and build your own version of any game!</p>
+        </div>
+
+        <div class="builder-content">
+            <div class="sidebar">
+                <div class="game-selector">
+                    <label for="gameSelect">Select Game:</label>
+                    <select id="gameSelect">
+                        <option value="liljs-castle">Lil J's Castle</option>
+                        <option value="unicastle">UniCastle</option>
+                        <option value="robot-lyric">Robot Lyric</option>
+                    </select>
+                </div>
+
+                <div class="customization-section" id="customizations">
+                    <!-- Customization controls will be dynamically generated -->
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="previewGame()">Preview</button>
+                    <button class="btn btn-success" onclick="saveConfig()">Save & Play</button>
+                    <button class="btn btn-secondary" onclick="resetConfig()">Reset</button>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                    <h4 style="margin-bottom: 10px; color: #856404;">💻 Edit Game Code</h4>
+                    <p style="color: #856404; font-size: 0.9em; margin-bottom: 10px;">
+                        Want to modify the actual game code? Use our code editor!
+                    </p>
+                    <a href="/game-builder/code-editor.html" class="btn btn-primary" style="width: 100%; text-decoration: none; display: block; text-align: center;">
+                        Open Code Editor →
+                    </a>
+                </div>
+
+                <div class="share-section">
+                    <h4>Share Your Game</h4>
+                    <input type="text" class="share-input" id="shareUrl" readonly placeholder="Share URL will appear here">
+                    <button class="btn btn-secondary" onclick="copyShareUrl()" style="width: 100%;">Copy Link</button>
+                </div>
+
+                <div class="config-display">
+                    <strong>Config JSON:</strong>
+                    <pre id="configDisplay"></pre>
+                </div>
+            </div>
+
+            <div class="preview-area">
+                <div class="preview-header">
+                    <h2>Preview</h2>
+                    <button class="btn btn-primary" onclick="refreshPreview()">🔄 Refresh</button>
+                </div>
+                <div class="preview-frame">
+                    <div class="preview-loading" id="previewLoading">Loading preview...</div>
+                    <iframe id="previewFrame" src="" style="display: none;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Saved successfully!</div>
+
+    <script>
+        // Game configurations
+        const gameConfigs = {
+            'liljs-castle': {
+                name: "Lil J's Castle",
+                url: '/liljs-castle/',
+                customizations: {
+                    'Background Color': {
+                        type: 'color',
+                        key: 'bgColor',
+                        default: '#332618',
+                        description: 'Background color'
+                    },
+                    'Title Color': {
+                        type: 'color',
+                        key: 'titleColor',
+                        default: '#FFCC66',
+                        description: 'Title text color'
+                    },
+                    'Castle Color': {
+                        type: 'color',
+                        key: 'castleColor',
+                        default: '#996633',
+                        description: 'Castle structure color'
+                    },
+                    'Animation Speed': {
+                        type: 'range',
+                        key: 'animSpeed',
+                        default: 1.0,
+                        min: 0.5,
+                        max: 2.0,
+                        step: 0.1,
+                        description: 'Animation speed multiplier'
+                    }
+                }
+            },
+            'unicastle': {
+                name: 'UniCastle',
+                url: '/fibonacci-suite/01-unicastle/',
+                customizations: {
+                    'Primary Color': {
+                        type: 'color',
+                        key: 'primaryColor',
+                        default: '#FFD700',
+                        description: 'Main game color'
+                    },
+                    'Background Color': {
+                        type: 'color',
+                        key: 'bgColor',
+                        default: '#1a1510',
+                        description: 'Background color'
+                    },
+                    'Jump Power Multiplier': {
+                        type: 'range',
+                        key: 'jumpMultiplier',
+                        default: 1.0,
+                        min: 0.5,
+                        max: 2.0,
+                        step: 0.1,
+                        description: 'Jump power multiplier'
+                    },
+                    'Gravity': {
+                        type: 'range',
+                        key: 'gravity',
+                        default: 800,
+                        min: 400,
+                        max: 1200,
+                        step: 50,
+                        description: 'Gravity strength'
+                    }
+                }
+            },
+            'robot-lyric': {
+                name: 'Robot Lyric',
+                url: '/robot-lyric/',
+                customizations: {
+                    'Player Speed': {
+                        type: 'range',
+                        key: 'playerSpeed',
+                        default: 5,
+                        min: 3,
+                        max: 10,
+                        step: 0.5,
+                        description: 'Player movement speed'
+                    },
+                    'Obstacle Speed': {
+                        type: 'range',
+                        key: 'obstacleSpeed',
+                        default: 3,
+                        min: 1,
+                        max: 8,
+                        step: 0.5,
+                        description: 'Obstacle movement speed'
+                    },
+                    'Background Theme': {
+                        type: 'select',
+                        key: 'background',
+                        default: 'day',
+                        options: ['day', 'night', 'sunset'],
+                        description: 'Background theme'
+                    }
+                }
+            }
+        };
+
+        let currentConfig = {};
+        let currentGame = 'liljs-castle';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('gameSelect').addEventListener('change', function() {
+                currentGame = this.value;
+                loadGameCustomizations();
+            });
+
+            loadGameCustomizations();
+        });
+
+        function loadGameCustomizations() {
+            const game = gameConfigs[currentGame];
+            const container = document.getElementById('customizations');
+            container.innerHTML = '';
+
+            // Load saved config or use defaults
+            const savedConfig = loadSavedConfig(currentGame);
+            currentConfig = { ...game.customizations };
+
+            Object.keys(game.customizations).forEach(name => {
+                const customization = game.customizations[name];
+                const section = document.createElement('div');
+                section.className = 'customization-section';
+
+                const title = document.createElement('h3');
+                title.textContent = name;
+                section.appendChild(title);
+
+                const controlGroup = document.createElement('div');
+                controlGroup.className = 'control-group';
+
+                let input;
+                const savedValue = savedConfig[customization.key] !== undefined 
+                    ? savedConfig[customization.key] 
+                    : customization.default;
+
+                if (customization.type === 'color') {
+                    input = document.createElement('input');
+                    input.type = 'color';
+                    input.name = customization.key;
+                    input.value = savedValue;
+                    input.addEventListener('input', function() {
+                        updateConfig();
+                    });
+                } else if (customization.type === 'range') {
+                    input = document.createElement('input');
+                    input.type = 'range';
+                    input.name = customization.key;
+                    input.min = customization.min;
+                    input.max = customization.max;
+                    input.step = customization.step || 1;
+                    input.value = savedValue;
+                    const valueDisplay = document.createElement('div');
+                    valueDisplay.className = 'value-display';
+                    valueDisplay.textContent = savedValue;
+                    input.addEventListener('input', function() {
+                        valueDisplay.textContent = this.value;
+                        updateConfig();
+                    });
+                    controlGroup.appendChild(valueDisplay);
+                } else if (customization.type === 'select') {
+                    input = document.createElement('select');
+                    input.name = customization.key;
+                    customization.options.forEach(option => {
+                        const optionEl = document.createElement('option');
+                        optionEl.value = option;
+                        optionEl.textContent = option;
+                        if (option === savedValue) optionEl.selected = true;
+                        input.appendChild(optionEl);
+                    });
+                    input.addEventListener('change', function() {
+                        updateConfig();
+                    });
+                } else if (customization.type === 'text' || customization.type === 'number') {
+                    input = document.createElement('input');
+                    input.type = customization.type;
+                    input.name = customization.key;
+                    input.value = savedValue;
+                    input.addEventListener('input', function() {
+                        updateConfig();
+                    });
+                }
+
+                const label = document.createElement('label');
+                label.textContent = customization.description || name;
+                controlGroup.appendChild(label);
+                controlGroup.appendChild(input);
+                section.appendChild(controlGroup);
+                container.appendChild(section);
+            });
+
+            updateConfig();
+        }
+
+        function updateConfig() {
+            const config = {};
+            const game = gameConfigs[currentGame];
+            
+            Object.keys(game.customizations).forEach(name => {
+                const customization = game.customizations[name];
+                const control = document.querySelector(`[name="${customization.key}"]`);
+                if (control) {
+                    config[customization.key] = customization.type === 'range' || customization.type === 'number'
+                        ? parseFloat(control.value) : control.value;
+                }
+            });
+
+            currentConfig = config;
+            document.getElementById('configDisplay').textContent = JSON.stringify(config, null, 2);
+        }
+
+        function previewGame() {
+            const game = gameConfigs[currentGame];
+            const config = getCurrentConfig();
+            const configString = btoa(JSON.stringify(config));
+            const previewUrl = `${game.url}?config=${configString}`;
+            
+            document.getElementById('previewFrame').src = previewUrl;
+            document.getElementById('previewFrame').style.display = 'block';
+            document.getElementById('previewLoading').style.display = 'none';
+        }
+
+        function getCurrentConfig() {
+            const config = {};
+            const game = gameConfigs[currentGame];
+            Object.keys(game.customizations).forEach(name => {
+                const customization = game.customizations[name];
+                const control = document.querySelector(`[name="${customization.key}"]`);
+                if (control) {
+                    config[customization.key] = customization.type === 'range' || customization.type === 'number'
+                        ? parseFloat(control.value) : control.value;
+                }
+            });
+            return config;
+        }
+
+        function saveConfig() {
+            const config = getCurrentConfig();
+            const configId = generateConfigId();
+            
+            // Save to localStorage
+            localStorage.setItem(`game_config_${currentGame}_${configId}`, JSON.stringify(config));
+            localStorage.setItem(`game_config_${currentGame}_latest`, JSON.stringify(config));
+
+            // Generate share URL
+            const configString = btoa(JSON.stringify(config));
+            const shareUrl = `${window.location.origin}/play/${currentGame}?config=${configString}`;
+            document.getElementById('shareUrl').value = shareUrl;
+
+            showToast('Configuration saved!');
+            previewGame();
+        }
+
+        function loadSavedConfig(game) {
+            const saved = localStorage.getItem(`game_config_${game}_latest`);
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function resetConfig() {
+            const game = gameConfigs[currentGame];
+            Object.keys(game.customizations).forEach(name => {
+                const customization = game.customizations[name];
+                const control = document.querySelector(`input[type="color"], input[type="range"], select`);
+                if (control) {
+                    control.value = customization.default;
+                }
+            });
+            updateConfig();
+            previewGame();
+        }
+
+        function refreshPreview() {
+            previewGame();
+        }
+
+        function copyShareUrl() {
+            const url = document.getElementById('shareUrl');
+            url.select();
+            document.execCommand('copy');
+            showToast('Link copied to clipboard!');
+        }
+
+        function generateConfigId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+

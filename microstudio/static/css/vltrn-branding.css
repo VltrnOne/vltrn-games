@@ -1,0 +1,136 @@
+/**
+ * VLTRN Game Studio - Custom Branding
+ * Overrides microStudio default styles to match vltrngames.com
+ */
+
+:root {
+  --vltrn-primary: #667eea;
+  --vltrn-secondary: #764ba2;
+  --vltrn-accent: #f093fb;
+  --vltrn-dark: #1e1e1e;
+  --vltrn-light: #d4d4d4;
+}
+
+/* Header Branding */
+.header,
+.topbar {
+  background: linear-gradient(135deg, var(--vltrn-primary) 0%, var(--vltrn-secondary) 100%) !important;
+}
+
+.header .logo,
+.topbar .logo {
+  background-image: url('/img/vltrn-logo.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Button Styling */
+.button,
+.btn,
+button.primary {
+  background: linear-gradient(135deg, var(--vltrn-primary) 0%, var(--vltrn-secondary) 100%) !important;
+  border: none !important;
+  color: white !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.button:hover,
+.btn:hover,
+button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Link Colors */
+a {
+  color: var(--vltrn-primary);
+}
+
+a:hover {
+  color: var(--vltrn-secondary);
+}
+
+/* Code Editor */
+.codeeditor,
+.editor {
+  border-color: var(--vltrn-primary);
+}
+
+/* Selection Colors */
+::selection {
+  background: var(--vltrn-primary);
+  color: white;
+}
+
+/* Focus States */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--vltrn-primary) !important;
+  outline-color: var(--vltrn-primary) !important;
+}
+
+/* Tab Active State */
+.tab.active,
+.tabs .active {
+  border-bottom-color: var(--vltrn-primary);
+  color: var(--vltrn-primary);
+}
+
+/* Loading Spinner */
+.spinner,
+.loader {
+  border-top-color: var(--vltrn-primary);
+}
+
+/* Success Messages */
+.success,
+.alert.success {
+  background: rgba(102, 126, 234, 0.1);
+  border-left-color: var(--vltrn-primary);
+  color: var(--vltrn-primary);
+}
+
+/* Footer */
+.footer {
+  background: var(--vltrn-dark);
+  color: var(--vltrn-light);
+  border-top: 2px solid var(--vltrn-primary);
+}
+
+/* Custom VLTRN Badge */
+.vltrn-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background: linear-gradient(135deg, var(--vltrn-primary) 0%, var(--vltrn-secondary) 100%);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+/* AI Agent Integration Styles */
+.ai-agent-integrated {
+  border-left: 3px solid var(--vltrn-primary);
+}
+
+/* Game Cards */
+.game-card {
+  border-color: var(--vltrn-primary);
+}
+
+.game-card:hover {
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Fibonacci Theme Elements */
+.fibonacci-indicator {
+  color: var(--vltrn-accent);
+}
+
+.fibonacci-indicator::before {
+  content: 'φ';
+  margin-right: 4px;
+}
+

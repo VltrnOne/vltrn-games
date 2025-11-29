@@ -319,3 +319,7 @@ castle-game-engine-*.fpm
 /tools/sprite-sheet-to-x3d/sprite-sheet-to-x3d
 /tools/texture-font-to-pascal/texture-font-to-pascal
 /tools/to-data-uri/to-data-uri
+# Temporary directories
+gdevelop-engine-temp/
+gdevelop-examples-temp/
+microstudio-temp/

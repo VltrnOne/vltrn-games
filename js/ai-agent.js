@@ -23,7 +23,7 @@ class VLTRNAIAgent {
         const button = document.createElement('button');
         button.id = 'ai-agent-button';
         button.className = 'ai-agent-button';
-        button.innerHTML = '🤖';
+        button.innerHTML = '<img src="/img/icons/vltrn bot icon48.png" alt="AI" style="width: 100%; height: 100%; object-fit: contain;">';
         button.title = 'VLTRN AI Assistant - Click for help';
         button.onclick = () => this.toggle();
         document.body.appendChild(button);

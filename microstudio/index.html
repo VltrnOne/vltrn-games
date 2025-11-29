@@ -123,24 +123,23 @@
 
     <div class="info-banner">
         <div>
-            <strong>VLTRN Game Studio</strong> - Create games from scratch! Full-featured game engine with AI code assistant, code editor, sprite editor, and more.
+            <strong>microStudio</strong> - Create games from scratch! Full-featured game engine with code editor, sprite editor, sound editor, and more.
         </div>
         <div>
-            <span id="server-status" style="color: #ff4444;">● Server: Not Connected</span>
+            <a href="https://microstudio.dev/documentation/" target="_blank">📚 Documentation</a>
         </div>
     </div>
 
     <div class="container">
         <div class="iframe-container">
             <div class="loading" id="loading">Loading microStudio...</div>
-            <iframe 
+            <iframe
                 id="microstudioFrame"
-                src="http://localhost:8080"
+                src="https://microstudio.dev"
                 allow="fullscreen"
                 allowfullscreen
-                title="VLTRN Game Studio"
+                title="microStudio Game Engine"
                 sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals"
-                style="display: none;"
             ></iframe>
         </div>
     </div>
@@ -149,35 +148,21 @@
         const iframe = document.getElementById('microstudioFrame');
         const loading = document.getElementById('loading');
 
+        // Hide loading once iframe loads
         iframe.addEventListener('load', function() {
             loading.style.display = 'none';
-            iframe.style.display = 'block';
         });
 
+        // Show error if iframe fails to load
         iframe.addEventListener('error', function() {
-            loading.innerHTML = 'Error loading VLTRN Game Studio.<br>Make sure the server is running on localhost:8080<br><br>To start: <code>cd microstudio/server && npm start</code>';
+            loading.innerHTML = 'Error loading microStudio.<br>Please check your internet connection.';
             loading.style.color = '#ff4444';
-            document.getElementById('server-status').textContent = '● Server: Error';
-            document.getElementById('server-status').style.color = '#ff4444';
         });
 
-        // Check server status
-        fetch('http://localhost:8080')
-            .then(() => {
-                document.getElementById('server-status').textContent = '● Server: Connected';
-                document.getElementById('server-status').style.color = '#28a745';
-            })
-            .catch(() => {
-                document.getElementById('server-status').textContent = '● Server: Not Running';
-                document.getElementById('server-status').style.color = '#ff4444';
-            });
-
-        // Fallback: if iframe doesn't load in 10 seconds, show instructions
+        // Auto-hide loading after 3 seconds as backup
         setTimeout(function() {
-            if (loading.style.display !== 'none') {
-                loading.innerHTML = 'Server not responding.<br><br>To start the server:<br><code style="background: #333; padding: 10px; display: block; margin: 10px 0;">cd microstudio/server<br>npm install<br>npm start</code>';
-            }
-        }, 10000);
+            loading.style.display = 'none';
+        }, 3000);
     </script>
 </body>
 </html>

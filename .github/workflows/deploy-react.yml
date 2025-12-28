@@ -1,11 +1,16 @@
 name: Build and Deploy React App
 
+# Temporarily disabled - using deploy-pages.yml instead
+# Uncomment to enable automatic React builds
+# on:
+#   push:
+#     branches:
+#       - main
+#       - master
+#   workflow_dispatch:
+
 on:
-  push:
-    branches:
-      - main
-      - master
-  workflow_dispatch:
+  workflow_dispatch:  # Only manual triggers for now
 
 permissions:
   contents: read

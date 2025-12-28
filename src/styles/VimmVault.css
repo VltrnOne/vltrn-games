@@ -1,110 +1,123 @@
-.iframe-error-container {
-  min-height: 500px;
+.vimm-vault-container {
+  min-height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-radius: 12px;
-  padding: 40px;
+  padding: 60px 40px;
 }
 
-.error-content {
+.vimm-content {
   text-align: center;
-  max-width: 500px;
+  max-width: 600px;
 }
 
-.error-icon {
-  font-size: 4em;
+.vimm-icon {
+  font-size: 5em;
+  margin-bottom: 20px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.vimm-content h2 {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.vimm-description {
+  font-size: 1.2em;
+  color: #666;
+  line-height: 1.8;
   margin-bottom: 20px;
 }
 
-.error-content h2 {
-  font-size: 1.8em;
-  color: #333;
-  margin-bottom: 15px;
-}
-
-.error-content p {
-  font-size: 1.1em;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 30px;
-}
-
-.open-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  border-radius: 8px;
-  font-size: 1.1em;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-}
-
-.open-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-}
-
-.open-button-secondary {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
-  border: 2px solid #667eea;
-  padding: 12px 24px;
-  border-radius: 8px;
+.vimm-note {
   font-size: 1em;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.open-button-secondary:hover {
-  background: #667eea;
-  color: white;
-  transform: translateY(-2px);
-}
-
-.error-note {
-  margin-top: 20px;
-  font-size: 0.9em;
-  color: #999;
+  color: #888;
+  margin-bottom: 40px;
   font-style: italic;
 }
 
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+.vimm-open-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 18px 40px;
+  border-radius: 12px;
+  font-size: 1.3em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 40px;
 }
 
-.loading-spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
+.vimm-open-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.vimm-features {
+  margin-top: 40px;
+  padding-top: 40px;
+  border-top: 2px solid #e0e0e0;
+  text-align: left;
 }
 
-.loading-overlay p {
-  color: #555;
+.vimm-features h3 {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.vimm-features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.vimm-features li {
   font-size: 1.1em;
+  color: #555;
+  padding: 12px 0;
+  padding-left: 30px;
+  position: relative;
+}
+
+.vimm-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #667eea;
+  font-weight: bold;
+  font-size: 1.3em;
+}
+
+@media (max-width: 768px) {
+  .vimm-vault-container {
+    padding: 40px 20px;
+  }
+  
+  .vimm-icon {
+    font-size: 4em;
+  }
+  
+  .vimm-content h2 {
+    font-size: 2em;
+  }
+  
+  .vimm-open-button {
+    font-size: 1.1em;
+    padding: 15px 30px;
+  }
 }
 

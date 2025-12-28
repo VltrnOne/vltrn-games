@@ -14,6 +14,7 @@
   overflow: hidden;
   background: #000;
   border-radius: 8px;
+  position: relative;
 }
 
 .iframe-container iframe {

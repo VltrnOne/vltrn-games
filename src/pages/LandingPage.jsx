@@ -6,100 +6,129 @@ const games = [
   {
     id: 'robot-lyric',
     title: 'Robot Lyric',
-    description: 'Fly through obstacles and collect power-ups',
+    type: 'Interactive Game',
+    description: 'Musical rhythm meets robotic precision.',
     icon: '/img/icons/robot lyric.png',
     path: '/robot-lyric/',
-    gradient: null
+    color: 'purple'
   },
   {
     id: 'liljs-castle',
     title: "Lil J's Castle",
-    description: 'Explore a magical castle adventure',
+    type: 'Adventure Game',
+    description: 'Epic castle exploration adventure.',
     icon: '/img/icons/lil js castle.png',
     path: '/liljs-castle/',
-    gradient: null
+    color: 'blue'
   },
   {
     id: 'golden-castle',
     title: 'Golden Castle Suite',
-    description: '7 games based on the golden ratio (φ) and mathematical sequences',
+    type: '7 Games Collection',
+    description: 'Ultimate gaming collection.',
     icon: '/img/icons/golden castle.png',
     path: '/golden-castle-suite/',
-    gradient: null
+    color: 'orange'
   },
   {
     id: 'game-builder',
     title: 'Game Builder',
-    description: 'Customize and build your own version of any game!',
+    type: 'Customization Tool',
+    description: 'Design and customize your games.',
     icon: '/img/icons/game builder.png',
     path: '/game-builder',
-    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    color: 'pink'
   },
   {
     id: 'microstudio',
     title: 'microStudio V',
-    description: 'VLTRN Edition with AI Code Assistant - create games with vibe coding!',
+    type: 'Code Engine with AI',
+    description: 'Create games with AI assistance.',
     icon: '/img/icons/micro studios.png',
     path: '/microstudio',
-    gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+    color: 'teal'
   },
   {
     id: 'gdevelop',
     title: 'GDevelop Editor',
-    description: 'Create games with no-code visual editor - no programming required!',
+    type: 'No-Code Editor',
+    description: 'Build games without coding.',
     icon: '/img/icons/gStudios.png',
     path: '/gdevelop-editor',
-    gradient: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)'
+    color: 'green'
   },
   {
     id: 'ai-agent',
     title: 'VLTRN AI Agent',
-    description: 'Your intelligent game development assistant - powered by AI',
+    type: 'AI Assistant',
+    description: 'Your intelligent gaming companion.',
     icon: '/img/icons/vltrn bot icon128.png',
     path: '/browser-extension/popup.html',
-    gradient: 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)'
+    color: 'red'
   },
   {
     id: 'vimm-vault',
     title: "Vimm's Vault",
-    description: 'Ultimate gaming engine with built-in emulator - thousands of classic games!',
+    type: 'Gaming Engine',
+    description: 'Classic gaming emulation platform.',
     icon: '🎮',
     path: '/vimm-vault',
-    gradient: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)',
+    color: 'brown',
     isEmoji: true
+  }
+]
+
+const stats = [
+  {
+    icon: '+',
+    number: '8',
+    label: 'GAMING PLATFORMS',
+    color: 'purple'
+  },
+  {
+    icon: '∞',
+    number: '∞',
+    label: 'GAMING POSSIBILITIES',
+    color: 'teal'
+  },
+  {
+    icon: '⭐',
+    number: '100%',
+    label: 'PURE GAMING FUN',
+    color: 'pink'
   }
 ]
 
 function LandingPage() {
   return (
-    <div className="main-content">
-      <div className="content-panel">
-        <div className="content-placeholders">
-          <div className="placeholder-small"></div>
-          <div className="placeholder-small"></div>
-          <div className="placeholder-large"></div>
-        </div>
-        
-        <div className="content-area">
-          <div className="landing-content">
-            <h1>🎮 VLTRN Games</h1>
-            <p className="subtitle">Where Mathematics Meets Magic</p>
+    <div className="gaming-dreamland">
+      <div className="dreamland-header">
+        <h1 className="main-title">VLTRN GAMES</h1>
+        <div className="divider"></div>
+        <h2 className="subtitle">GAMING DREAMLAND</h2>
+        <p className="creators">Created by Lyric & Aria</p>
+        <p className="description">
+          From custom creations to retro classics - every gaming experience you can imagine, all in one epic location.
+        </p>
+      </div>
 
-            <div className="games-grid">
-              {games.map(game => (
-                <GameCard key={game.id} {...game} />
-              ))}
-            </div>
+      <div className="games-grid">
+        {games.map(game => (
+          <GameCard key={game.id} {...game} />
+        ))}
+      </div>
 
-            <div className="phi">
-              φ = 1.618033988749894848204586834365638117720309179805762862135...
-            </div>
+      <div className="stats-grid">
+        {stats.map((stat, index) => (
+          <div key={index} className={`stat-card ${stat.color}`}>
+            <div className="stat-icon">{stat.icon}</div>
+            <div className="stat-number">{stat.number}</div>
+            <div className="stat-label">{stat.label}</div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   )
 }
 
 export default LandingPage
-

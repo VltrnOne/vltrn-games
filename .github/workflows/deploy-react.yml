@@ -12,8 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Allow GitHub Actions runner dir as a safe directory
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

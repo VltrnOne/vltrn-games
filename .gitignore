@@ -27,3 +27,8 @@ npm-debug.log*
 # Castle Engine
 castle-engine-output/
 *.compiled
+
+# Temp directories (should not be tracked)
+gdevelop-engine-temp/
+gdevelop-examples-temp/
+microstudio-temp/

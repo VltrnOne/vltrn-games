@@ -1,0 +1,24 @@
+.info-banner {
+  background: rgba(102, 126, 234, 0.1);
+  padding: 12px 20px;
+  text-align: center;
+  font-size: 0.9em;
+  color: #555;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.iframe-container {
+  width: 100%;
+  height: calc(100vh - 200px);
+  overflow: hidden;
+  background: #000;
+  border-radius: 8px;
+}
+
+.iframe-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
